@@ -1,0 +1,41 @@
+spring:
+  #  datasource:
+  #    driver-class-name: org.postgresql.Driver
+  #    hikari:
+  #      connection-timeout: 20000
+  #      maximum-pool-size: 5
+  #    url: jdbc:postgresql://localhost:5432/category_db
+  #    username: postgres
+  #    password: postgres
+  #  jpa:
+  #    hibernate:
+  #      ddl-auto: update
+  datasource:
+    url: jdbc:postgresql://localhost:5432/category_db?createDatabaseIfNotExist=true
+    hikari:
+      connection-timeout: 20000
+      maximum-pool-size: 5
+    username: user
+    password: pass
+  # JPA properties
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+#    database: postgresql
+#    database-platform: org.hibernate.dialect.PostgreSQLDialect
+#    open-in-view: false
+#    generate-ddl: false
+
+#  application:
+#    name: @application.name@
+#  profiles:
+#    active: local
+#  cloud:
+#    config:
+#      uri: http://localhost:8888
+#      failFast: false
+#      label: ""
+
+logging:
+  level.root: error

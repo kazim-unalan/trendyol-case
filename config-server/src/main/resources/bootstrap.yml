@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: config-server
+
+  cloud:
+    config:
+      server:
+        bootstrap: true 
+        git:
+          uri: https://github.com/kazim-unalan/trendyol-case-properties.git
+          force-pull: true
+
+info:
+  build:
+    name: @application.name@
+    group: @project.groupId@
+    artifact: @project.artifactId@
+    version: @project.version@

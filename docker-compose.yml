@@ -1,0 +1,249 @@
+version: '3.6'
+services:
+  config-server:
+    container_name: config-server
+    image: config-server
+    restart: always
+    build:
+      context: ./config-server/.
+      dockerfile: DockerFile.sh
+    ports:
+      - 8888:8888
+    networks:
+      - backend
+    depends_on:
+      - rabbitmq
+
+  eureka-server:
+    container_name: eureka-server
+    image: eureka-server
+    restart: always
+    build:
+      context: ./eureka-server/.
+      dockerfile: DockerFile.sh
+    ports:
+      - 8761:8761
+    networks:
+      - backend
+    depends_on:
+      - rabbitmq
+
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3-management
+    restart: always
+    environment:
+      - RABBITMQ_DEFAULT_USER=rabbitmq
+      - RABBITMQ_DEFAULT_PASS=rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+    networks:
+      - backend
+
+  hystrix-dashboard-server:
+    container_name: hystrix-dashboard-server
+    image: hystrix-dashboard-server
+    restart: always
+    build:
+      context: ./hystrix-dashboard-server/.
+      dockerfile: DockerFile.sh
+    ports:
+      - 7979:7979
+      - 7980:7980
+    networks:
+      - backend
+    depends_on:
+      - rabbitmq
+      - config-server
+      - eureka-server
+
+  turbine-server:
+    container_name: turbine-server
+    image: turbine-server
+    restart: always
+    build:
+      context: ./turbine-server/.
+      dockerfile: DockerFile.sh
+    ports:
+      - 9999:9999
+    networks:
+      - backend
+    depends_on:
+      - rabbitmq
+      - config-server
+      - eureka-server
+      - hystrix-dashboard-server
+
+  product-server:
+    container_name: product-server
+    image: product-server
+    restart: always
+    build:
+      context: ./product-server/.
+      dockerfile: DockerFile.sh
+    ports:
+      - 8019:8019
+    networks:
+      - backend
+    depends_on:
+      - rabbitmq
+      - config-server
+      - eureka-server
+      - hystrix-dashboard-server
+
+  frontend-server:
+    container_name: frontend-server
+    image: frontend-server
+    restart: always
+    build:
+      context: ./frontend-server/.
+      dockerfile: DockerFile.sh
+    ports:
+      - 8011:8011
+    networks:
+      - backend
+    depends_on:
+      - rabbitmq
+      - config-server
+      - eureka-server
+      - hystrix-dashboard-server
+
+  card-server:
+    container_name: card-server
+    image: card-server
+    restart: always
+    build:
+      context: ./card-server/.
+      dockerfile: DockerFile.sh
+    ports:
+      - 8012:8012
+    networks:
+      - backend
+    depends_on:
+      - rabbitmq
+      - config-server
+      - eureka-server
+      - hystrix-dashboard-server
+
+  category-server:
+    container_name: category-server
+    image: category-server
+    restart: always
+    build:
+      context: ./category-server/.
+      dockerfile: DockerFile.sh
+    ports:
+      - 8016:8016
+    networks:
+      - backend
+    depends_on:
+      - rabbitmq
+      - config-server
+      - eureka-server
+      - hystrix-dashboard-server
+
+  order-server:
+    container_name: order-server
+    image: order-server
+    restart: always
+    build:
+      context: ./order-server/.
+      dockerfile: DockerFile.sh
+    ports:
+      - 8013:8013
+    networks:
+      - backend
+    depends_on:
+      - rabbitmq
+      - config-server
+      - eureka-server
+      - hystrix-dashboard-server
+
+  payment-server:
+    container_name: payment-server
+    image: payment-server
+    restart: always
+    build:
+      context: ./payment-server/.
+      dockerfile: DockerFile.sh
+    ports:
+      - 8014:8014
+    networks:
+      - backend
+    depends_on:
+      - rabbitmq
+      - config-server
+      - eureka-server
+      - hystrix-dashboard-server
+
+  delivery-server:
+    container_name: delivery-server
+    image: delivery-server
+    restart: always
+    build:
+      context: ./delivery-server/.
+      dockerfile: DockerFile.sh
+    ports:
+      - 8017:8017
+    networks:
+      - backend
+    depends_on:
+      - rabbitmq
+      - config-server
+      - eureka-server
+      - hystrix-dashboard-server
+
+  discounts-server:
+    container_name: discounts-server
+    image: discounts-server
+    restart: always
+    build:
+      context: ./discounts-server/.
+      dockerfile: DockerFile.sh
+    ports:
+      - 8018:8018
+    networks:
+      - backend
+    depends_on:
+      - rabbitmq
+      - config-server
+      - eureka-server
+      - hystrix-dashboard-server
+
+  postgresql:
+    container_name: postgresql
+    image: postgres
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+    networks:
+      - backend
+    restart: unless-stopped
+
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-pgadmin}
+    volumes:
+      - ./pgadmin-data:/var/lib/postgresql/data
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    networks:
+      - backend
+    restart: unless-stopped
+
+networks:
+  backend:
+    driver: "bridge"
+
+volumes:
+  postgres:
+  pgadmin:

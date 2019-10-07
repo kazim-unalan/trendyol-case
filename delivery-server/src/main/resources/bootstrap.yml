@@ -1,0 +1,19 @@
+fixed-cost: 2.99
+
+spring:
+  application:
+    name: @application.name@
+  profiles:
+    active: local
+  cloud:
+    config:
+      uri: http://localhost:8888
+      failFast: false
+      label: ""
+
+info:
+  build:
+    name: @application.name@
+    group: @project.groupId@
+    artifact: @project.artifactId@
+    version: @project.version@
